@@ -1,21 +1,20 @@
-from flask import Flask, config, render_template, url_for,request,redirect
+from flask import Flask, render_template,request,redirect
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
 
-from werkzeug.datastructures import ContentRange
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///contactlist.db'
 db = SQLAlchemy(app)
 
+
 class Todo(db.Model):
-    id = db.Column(db.Integer, primary_key=True)   #db schema
+    id = db.Column(db.Integer, primary_key=True)   
     name = db.Column(db.String(200), nullable=False)
     phonenumber = db.Column(db.String(200), nullable=False)
-    #date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return '<Task %r' % self.id
+
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -54,11 +53,9 @@ def update(id):
 def add():
     return render_template('newcontact.html')
 
-
 @app.route('/addphonebook', methods=['POST'])
 def addphonebook():
-    if request.method == 'POST':
-       
+    if request.method == 'POST':       
         new_task = Todo(name=request.form['name'], phonenumber = request.form['phonenumber'])
         
         try:
@@ -67,7 +64,6 @@ def addphonebook():
             return redirect('/')
         except:
             return 'There was an issue adding your task'
-
 
 if __name__ == "__main__":
     app.run(debug=True)
